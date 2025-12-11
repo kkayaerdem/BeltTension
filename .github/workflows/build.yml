@@ -11,19 +11,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install dependencies
+    - name: Install system deps
       run: |
         sudo apt update
         sudo apt install -y python3-pip python3-setuptools git zip openjdk-17-jdk
         pip install --upgrade pip
-        pip install buildozer cython
+        pip install cython buildozer
 
-    - name: Buildozer Android Debug
+    - name: Build Debug APK
       run: |
-        buildozer -v android debug
+        buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-apk
+        name: beltkayis-apk
         path: bin/*.apk
