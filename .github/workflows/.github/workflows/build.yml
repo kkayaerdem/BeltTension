@@ -11,41 +11,41 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install system dependencies
+    - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y python3-pip python3-setuptools git zip openjdk-17-jdk unzip
-
-    - name: Install Buildozer
-      run: |
+        sudo apt install -y python3-pip python3-setuptools zip openjdk-17-jdk git unzip
         pip install --upgrade pip
         pip install buildozer cython
 
-    - name: Prepare Android SDK manually
+    - name: Install Android SDK manually
       run: |
-        mkdir -p $HOME/android-sdk
-        cd $HOME/android-sdk
-        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdtools.zip
-        unzip cmdtools.zip -d cmdline-tools
-        mv cmdline-tools/cmdline-tools cmdline-tools/latest
+        export ANDROID_SDK_ROOT=/usr/local/android-sdk
+        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+        cd $ANDROID_SDK_ROOT/cmdline-tools
 
-        yes | cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk \
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O tools.zip
+        unzip tools.zip -d latest
+
+        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
             "platform-tools" \
             "platforms;android-33" \
             "build-tools;33.0.2"
 
-    - name: Set Buildozer to use preinstalled SDK
+        echo "Android SDK installed."
+
+    - name: Force Buildozer to use our SDK
       run: |
-        echo "android.sdk_path = $HOME/android-sdk" >> buildozer.spec
-        echo "android.ndk_path = $HOME/android-sdk/ndk-bundle" >> buildozer.spec
+        echo "android.sdk_path = /usr/local/android-sdk" >> buildozer.spec
         echo "android.accept_sdk_license = True" >> buildozer.spec
 
-    - name: Build debug APK
+    - name: Build APK
       run: |
-        buildozer -v android debug
+        export ANDROID_SDK_ROOT=/usr/local/android-sdk
+        buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: beltkayis-debug-apk
+        name: beltkayis-apk
         path: bin/*.apk
