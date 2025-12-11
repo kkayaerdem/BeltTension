@@ -10,21 +10,10 @@ orientation = portrait
 fullscreen = 0
 android.permissions = INTERNET
 
-# ---- Android Ayarları (ZORUNLU) ----
+# ---- ÇOK ÖNEMLİ AYARLAR ----
 android.api = 33
 android.minapi = 21
 android.sdk = 33
 android.ndk = 25b
-android.ndk_api = 21
-android.build_tools = 33.0.2
-android.archs = armeabi-v7a, arm64-v8a
-android.allow_backup = False
-
-[buildozer]
-log_level = 2
-warn_on_root = 1
-android.sdk_path = /usr/local/android-sdk
-android.sdk_api = 33
+android.build_tools = 33.0.3
 android.accept_sdk_license = True
-
-
