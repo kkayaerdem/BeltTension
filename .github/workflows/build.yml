@@ -1,0 +1,29 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip python3-setuptools git zip
+        pip install --upgrade pip
+        pip install buildozer cython
+
+    - name: Buildozer Android Debug
+      run: |
+        buildozer -v android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-apk
+        path: bin/*.apk
